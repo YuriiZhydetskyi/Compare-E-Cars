@@ -427,32 +427,34 @@
             // Конфігурація колонок
             const columns = [
                 {title: "Модель", field: "model", frozen: true, width: 200, headerFilter: "input"},
-                {title: "Хімія батареї", field: "battery_chemistry", width: 150},
-                {title: "Ємність (кВт·год)", field: "battery_capacity_kwh", width: 150, sorter: "number"},
-                {title: "Запас WLTP (км)", field: "range_wltp_km", width: 150},
-                {title: "Реальний запас (км)", field: "range_real_km", width: 150},
-                {title: "Заряд 0-100% (год)", field: "charge_0_100_hours", width: 150},
-                {title: "Заряд 10-80% (хв)", field: "charge_10_80_minutes", width: 150},
-                {title: "DC макс (кВт)", field: "dc_charging_max_kw", width: 120},
-                {title: "AC макс (кВт)", field: "ac_charging_max_kw", width: 120},
+                {title: "Хімія батареї", field: "battery_chemistry", width: 150, formatter: "html"},
+                {title: "Ємність (кВт·год)", field: "battery_capacity_kwh", width: 150, sorter: "number", formatter: "html"},
+                {title: "Запас WLTP (км)", field: "range_wltp_km", width: 150, formatter: "html"},
+                {title: "Реальний запас (км)", field: "range_real_km", width: 150, formatter: "html"},
+                {title: "Заряд 0-100% (год)", field: "charge_0_100_hours", width: 150, formatter: "html"},
+                {title: "Заряд 10-80% (хв)", field: "charge_10_80_minutes", width: 150, formatter: "html"},
+                {title: "DC макс (кВт)", field: "dc_charging_max_kw", width: 120, formatter: "html"},
+                {title: "AC макс (кВт)", field: "ac_charging_max_kw", width: 120, formatter: "html"},
                 {title: "Кліренс (мм)", field: "ground_clearance_mm", width: 120, formatter: function(cell) {
                     const value = cell.getValue();
                     const row = cell.getRow().getData();
+                    const valueStr = value.toString().split('<')[0]; // Видаляємо HTML якщо є
+                    
                     if (row.clearance_requirement_met) {
                         return `<span style="color: #28a745">✓ ${value}</span>`;
                     } else {
                         return `<span style="color: #dc3545">✗ ${value}</span>`;
                     }
                 }},
-                {title: "Порт зарядки", field: "charging_port", width: 150},
-                {title: "Термоменеджмент", field: "thermal_management", width: 150},
-                {title: "Роки виробництва", field: "production_years", width: 150},
-                {title: "Довжина (мм)", field: "length_mm", width: 120},
-                {title: "Ширина (мм)", field: "width_mm", width: 120},
-                {title: "Клас", field: "vehicle_class", width: 150},
-                {title: "Ціна нова (€)", field: "price_new_eur", width: 150},
-                {title: "Ціна б/в Україна (€)", field: "price_used_ukraine_eur", width: 180, headerFilter: "input"},
-                {title: "Об'єм багажника (л)", field: "trunk_volume_l", width: 150},
+                {title: "Порт зарядки", field: "charging_port", width: 150, formatter: "html"},
+                {title: "Термоменеджмент", field: "thermal_management", width: 150, formatter: "html"},
+                {title: "Роки виробництва", field: "production_years", width: 150, formatter: "html"},
+                {title: "Довжина (мм)", field: "length_mm", width: 120, formatter: "html"},
+                {title: "Ширина (мм)", field: "width_mm", width: 120, formatter: "html"},
+                {title: "Клас", field: "vehicle_class", width: 150, formatter: "html"},
+                {title: "Ціна нова (€)", field: "price_new_eur", width: 150, formatter: "html"},
+                {title: "Ціна б/в Україна (€)", field: "price_used_ukraine_eur", width: 180, headerFilter: "input", formatter: "html"},
+                {title: "Об'єм багажника (л)", field: "trunk_volume_l", width: 150, formatter: "html"},
                 {title: "Примітки", field: "notes", width: 300, formatter: "textarea"}
             ];
             
