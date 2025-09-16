@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Порівняння електромобілів України 2025</title>
+    
+    <!-- Tabulator CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.5.0/css/tabulator.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        select, input[type="file"], button {
+            padding: 8px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        select:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        button.secondary {
+            background: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background: #5a6268;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        #ev-table {
+            margin: 0;
+        }
+        
+        .tabulator {
+            font-size: 14px;
+        }
+        
+        .tabulator-col-title {
+            font-weight: 600;
+        }
+        
+        .positive-diff {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .negative-diff {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .neutral-diff {
+            color: #6c757d;
+        }
+        
+        .base-model-row {
+            background: #fff3cd !important;
+            font-weight: 600;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-size: 18px;
+        }
+        
+        .info-panel {
+            padding: 20px 30px;
+            background: #e7f3ff;
+            border-top: 3px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .info-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .info-item h3 {
+            color: #495057;
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .info-item p {
+            color: #212529;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .selector-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .item-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .item-toggle:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .item-toggle input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .item-toggle.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .item-toggle.hidden-item {
+            background: #ffc107;
+            color: #000;
+        }
+
+        /* Context Menu Styles */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            min-width: 200px;
+            overflow: hidden;
+        }
+
+        .context-menu-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .context-menu-item:hover {
+            background: #f8f9fa;
+        }
+
+        .context-menu-separator {
+            height: 1px;
+            background: #e9ecef;
+            margin: 5px 0;
+        }
+
+        .hidden-rows-panel {
+            padding: 15px;
+            background: #fff3cd;
+            border-top: 2px solid #ffc107;
+        }
+
+        .hidden-rows-panel h4 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        .hidden-row-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: white;
+            border-radius: 15px;
+            margin: 3px;
+            border: 1px solid #ffc107;
+        }
+
+        .hidden-row-item button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .hidden-row-item button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Порівняння електромобілів</h1>
+            <p>Україна 2025 • Бюджет до €20,000</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="fileInput">📁 Завантажити JSON:</label>
+                <input type="file" id="fileInput" accept=".json">
+            </div>
+            
+            <div class="control-group">
+                <label for="baseModel">🎯 Базова модель:</label>
+                <select id="baseModel">
+                    <option value="">-- Виберіть модель для порівняння --</option>
+                </select>
+            </div>
+            
+            <button id="resetComparison" class="secondary">🔄 Скинути порівняння</button>
+            <button id="toggleColumns">📊 Колонки</button>
+            <button id="showHiddenRows">👁️ Приховані рядки</button>
+        </div>
+
+        <div id="columnSelector" class="selector-panel" style="display: none;"></div>
+        
+        <div id="hiddenRowsPanel" class="hidden-rows-panel" style="display: none;">
+            <h4>Приховані моделі:</h4>
+            <div id="hiddenRowsList"></div>
+        </div>
+        
+        <div id="loading" class="loading">
+            Завантажте JSON файл для початку роботи...
+        </div>
+        
+        <div id="ev-table"></div>
+        
+        <div id="infoPanel" class="info-panel" style="display: none;">
+            <div class="info-item">
+                <h3>Всього моделей</h3>
+                <p id="totalModels">-</p>
+            </div>
+            <div class="info-item">
+                <h3>В межах бюджету</h3>
+                <p id="withinBudget">-</p>
+            </div>
+            <div class="info-item">
+                <h3>Середня ціна</h3>
+                <p id="avgPrice">-</p>
+            </div>
+            <div class="info-item">
+                <h3>Дедлайн податків</h3>
+                <p id="taxDeadline">-</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu" style="display: none;">
+        <div class="context-menu-item" id="moveToTop">
+            <span>⬆️</span> Перемістити на початок
+        </div>
+        <div class="context-menu-item" id="moveUp">
+            <span>🔼</span> Перемістити вгору
+        </div>
+        <div class="context-menu-item" id="moveDown">
+            <span>🔽</span> Перемістити вниз
+        </div>
+        <div class="context-menu-item" id="moveToBottom">
+            <span>⬇️</span> Перемістити в кінець
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" id="hideRow">
+            <span>👁️‍🗨️</span> Приховати рядок
+        </div>
+        <div class="context-menu-item" id="setAsBase">
+            <span>🎯</span> Встановити як базову
+        </div>
+    </div>
+
+    <!-- Tabulator JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.5.0/js/tabulator.min.js"></script>
+    
+    <script>
+        let table;
+        let evData = [];
+        let baseModelData = null;
+        let hiddenRows = [];
+        let contextMenuRow = null;
+
+        // Функція для парсингу числових значень з рядків типу "10-20" або "10"
+        function parseNumericValue(value) {
+            if (!value) return null;
+            const str = value.toString();
+            const match = str.match(/[\d.]+/);
+            return match ? parseFloat(match[0]) : null;
+        }
+
+        // Функція порівняння числових значень
+        function compareNumeric(value, baseValue) {
+            const num = parseNumericValue(value);
+            const baseNum = parseNumericValue(baseValue);
+            
+            if (num === null || baseNum === null) return value;
+            
+            const diff = num - baseNum;
+            const diffStr = diff > 0 ? `+${diff.toFixed(0)}` : diff.toFixed(0);
+            const colorClass = diff > 0 ? 'positive-diff' : (diff < 0 ? 'negative-diff' : 'neutral-diff');
+            
+            return `${value} <span class="${colorClass}">(${diffStr})</span>`;
+        }
+
+        // Ініціалізація таблиці
+        function initTable(data) {
+            evData = data.electric_vehicles;
+            
+            // Оновлення інфо-панелі
+            document.getElementById('totalModels').textContent = data.summary.total_models;
+            document.getElementById('withinBudget').textContent = data.summary.models_within_budget;
+            document.getElementById('avgPrice').textContent = data.summary.average_price_eur;
+            document.getElementById('taxDeadline').textContent = data.summary.tax_deadline;
+            document.getElementById('infoPanel').style.display = 'flex';
+            document.getElementById('loading').style.display = 'none';
+            
+            // Заповнення селекту базових моделей
+            const baseModelSelect = document.getElementById('baseModel');
+            baseModelSelect.innerHTML = '<option value="">-- Виберіть модель для порівняння --</option>';
+            evData.forEach((vehicle, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = vehicle.model;
+                baseModelSelect.appendChild(option);
+            });
+            
+            // Конфігурація колонок
+            const columns = [
+                {title: "Модель", field: "model", frozen: true, width: 200, headerFilter: "input"},
+                {title: "Хімія батареї", field: "battery_chemistry", width: 150},
+                {title: "Ємність (кВт·год)", field: "battery_capacity_kwh", width: 150, sorter: "number"},
+                {title: "Запас WLTP (км)", field: "range_wltp_km", width: 150},
+                {title: "Реальний запас (км)", field: "range_real_km", width: 150},
+                {title: "Заряд 0-100% (год)", field: "charge_0_100_hours", width: 150},
+                {title: "Заряд 10-80% (хв)", field: "charge_10_80_minutes", width: 150},
+                {title: "DC макс (кВт)", field: "dc_charging_max_kw", width: 120},
+                {title: "AC макс (кВт)", field: "ac_charging_max_kw", width: 120},
+                {title: "Кліренс (мм)", field: "ground_clearance_mm", width: 120, formatter: function(cell) {
+                    const value = cell.getValue();
+                    const row = cell.getRow().getData();
+                    if (row.clearance_requirement_met) {
+                        return `<span style="color: #28a745">✓ ${value}</span>`;
+                    } else {
+                        return `<span style="color: #dc3545">✗ ${value}</span>`;
+                    }
+                }},
+                {title: "Порт зарядки", field: "charging_port", width: 150},
+                {title: "Термоменеджмент", field: "thermal_management", width: 150},
+                {title: "Роки виробництва", field: "production_years", width: 150},
+                {title: "Довжина (мм)", field: "length_mm", width: 120},
+                {title: "Ширина (мм)", field: "width_mm", width: 120},
+                {title: "Клас", field: "vehicle_class", width: 150},
+                {title: "Ціна нова (€)", field: "price_new_eur", width: 150},
+                {title: "Ціна б/в Україна (€)", field: "price_used_ukraine_eur", width: 180, headerFilter: "input"},
+                {title: "Об'єм багажника (л)", field: "trunk_volume_l", width: 150},
+                {title: "Примітки", field: "notes", width: 300, formatter: "textarea"}
+            ];
+            
+            // Створення таблиці
+            table = new Tabulator("#ev-table", {
+                data: evData,
+                layout: "fitDataFill",
+                columns: columns,
+                movableColumns: true,
+                resizableColumns: true,
+                pagination: "local",
+                paginationSize: 20,
+                paginationSizeSelector: [10, 20, 50, 100],
+                height: "600px",
+                rowFormatter: function(row) {
+                    if (baseModelData && row.getData().model === baseModelData.model) {
+                        row.getElement().classList.add("base-model-row");
+                    }
+                },
+                rowContextMenu: function(e, row) {
+                    e.preventDefault();
+                    contextMenuRow = row;
+                    showContextMenu(e.clientX, e.clientY);
+                }
+            });
+
+            // Створення селектора колонок
+            createColumnSelector(columns);
+        }
+
+        // Створення селектора колонок
+        function createColumnSelector(columns) {
+            const selector = document.getElementById('columnSelector');
+            selector.innerHTML = '<strong>Показати/приховати колонки:</strong><br>';
+            
+            columns.forEach(col => {
+                const toggle = document.createElement('label');
+                toggle.className = 'item-toggle active';
+                toggle.innerHTML = `
+                    <input type="checkbox" checked data-field="${col.field}">
+                    <span>${col.title}</span>
+                `;
+                
+                toggle.querySelector('input').addEventListener('change', function() {
+                    if (this.checked) {
+                        table.showColumn(col.field);
+                        toggle.classList.add('active');
+                    } else {
+                        table.hideColumn(col.field);
+                        toggle.classList.remove('active');
+                    }
+                });
+                
+                selector.appendChild(toggle);
+            });
+        }
+
+        // Порівняння з базовою моделлю
+        function compareWithBase(baseIndex) {
+            if (baseIndex === '') {
+                table.replaceData(evData.filter(v => !hiddenRows.includes(v.model)));
+                baseModelData = null;
+                return;
+            }
+            
+            baseModelData = evData[baseIndex];
+            const comparisonData = evData.filter(v => !hiddenRows.includes(v.model)).map(vehicle => {
+                if (vehicle.model === baseModelData.model) {
+                    return vehicle;
+                }
+                
+                const compared = {...vehicle};
+                
+                // Порівняння всіх числових полів
+                const numericFields = [
+                    'battery_capacity_kwh', 
+                    'ground_clearance_mm', 
+                    'dc_charging_max_kw', 
+                    'ac_charging_max_kw',
+                    'length_mm',
+                    'width_mm',
+                    'trunk_volume_l',
+                    'charge_0_100_hours',
+                    'charge_10_80_minutes'
+                ];
+                
+                numericFields.forEach(field => {
+                    if (vehicle[field] && baseModelData[field]) {
+                        compared[field] = compareNumeric(vehicle[field], baseModelData[field]);
+                    }
+                });
+                
+                // Порівняння діапазонів (range)
+                if (vehicle.range_wltp_km && baseModelData.range_wltp_km) {
+                    compared.range_wltp_km = compareNumeric(vehicle.range_wltp_km, baseModelData.range_wltp_km);
+                }
+                
+                if (vehicle.range_real_km && baseModelData.range_real_km) {
+                    compared.range_real_km = compareNumeric(vehicle.range_real_km, baseModelData.range_real_km);
+                }
+                
+                return compared;
+            });
+            
+            table.replaceData(comparisonData);
+            table.redraw();
+        }
+
+        // Показати контекстне меню
+        function showContextMenu(x, y) {
+            const menu = document.getElementById('contextMenu');
+            menu.style.display = 'block';
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+        }
+
+        // Приховати контекстне меню
+        function hideContextMenu() {
+            document.getElementById('contextMenu').style.display = 'none';
+        }
+
+        // Приховати рядок
+        function hideRow(model) {
+            if (!hiddenRows.includes(model)) {
+                hiddenRows.push(model);
+                updateHiddenRowsPanel();
+                if (baseModelData) {
+                    compareWithBase(evData.findIndex(v => v.model === baseModelData.model));
+                } else {
+                    table.replaceData(evData.filter(v => !hiddenRows.includes(v.model)));
+                }
+            }
+        }
+
+        // Показати рядок
+        function showRow(model) {
+            hiddenRows = hiddenRows.filter(m => m !== model);
+            updateHiddenRowsPanel();
+            if (baseModelData) {
+                compareWithBase(evData.findIndex(v => v.model === baseModelData.model));
+            } else {
+                table.replaceData(evData.filter(v => !hiddenRows.includes(v.model)));
+            }
+        }
+
+        // Оновити панель прихованих рядків
+        function updateHiddenRowsPanel() {
+            const panel = document.getElementById('hiddenRowsPanel');
+            const list = document.getElementById('hiddenRowsList');
+            
+            if (hiddenRows.length > 0) {
+                panel.style.display = 'block';
+                list.innerHTML = '';
+                hiddenRows.forEach(model => {
+                    const item = document.createElement('span');
+                    item.className = 'hidden-row-item';
+                    item.innerHTML = `
+                        ${model}
+                        <button onclick="showRow('${model.replace(/'/g, "\\'")}')">Показати</button>
+                    `;
+                    list.appendChild(item);
+                });
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        // Переміщення рядків
+        function moveRowToTop() {
+            const row = contextMenuRow;
+            if (row) {
+                row.move(1);
+            }
+        }
+
+        function moveRowUp() {
+            const row = contextMenuRow;
+            if (row) {
+                row.movePrev();
+            }
+        }
+
+        function moveRowDown() {
+            const row = contextMenuRow;
+            if (row) {
+                row.moveNext();
+            }
+        }
+
+        function moveRowToBottom() {
+            const row = contextMenuRow;
+            if (row) {
+                const rows = table.getRows();
+                row.move(rows.length);
+            }
+        }
+
+        // Події контекстного меню
+        document.getElementById('moveToTop').addEventListener('click', () => {
+            moveRowToTop();
+            hideContextMenu();
+        });
+
+        document.getElementById('moveUp').addEventListener('click', () => {
+            moveRowUp();
+            hideContextMenu();
+        });
+
+        document.getElementById('moveDown').addEventListener('click', () => {
+            moveRowDown();
+            hideContextMenu();
+        });
+
+        document.getElementById('moveToBottom').addEventListener('click', () => {
+            moveRowToBottom();
+            hideContextMenu();
+        });
+
+        document.getElementById('hideRow').addEventListener('click', () => {
+            if (contextMenuRow) {
+                hideRow(contextMenuRow.getData().model);
+            }
+            hideContextMenu();
+        });
+
+        document.getElementById('setAsBase').addEventListener('click', () => {
+            if (contextMenuRow) {
+                const model = contextMenuRow.getData().model;
+                const index = evData.findIndex(v => v.model === model);
+                document.getElementById('baseModel').value = index;
+                compareWithBase(index);
+            }
+            hideContextMenu();
+        });
+
+        // Закрити контекстне меню при кліку поза ним
+        document.addEventListener('click', hideContextMenu);
+        document.getElementById('contextMenu').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Обробка завантаження файлу
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        initTable(data);
+                    } catch (error) {
+                        alert('Помилка при читанні JSON файлу: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Обробка вибору базової моделі
+        document.getElementById('baseModel').addEventListener('change', function(e) {
+            compareWithBase(e.target.value);
+        });
+
+        // Скидання порівняння
+        document.getElementById('resetComparison').addEventListener('click', function() {
+            document.getElementById('baseModel').value = '';
+            compareWithBase('');
+        });
+
+        // Показати/сховати селектор колонок
+        document.getElementById('toggleColumns').addEventListener('click', function() {
+            const selector = document.getElementById('columnSelector');
+            selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Показати/сховати приховані рядки
+        document.getElementById('showHiddenRows').addEventListener('click', function() {
+            const panel = document.getElementById('hiddenRowsPanel');
+            if (hiddenRows.length > 0) {
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            } else {
+                alert('Немає прихованих рядків');
+            }
+        });
+
+        // Зробити функції доступними глобально
+        window.showRow = showRow;
+
+        // Спроба автоматичного завантаження з локального файлу
+        fetch('ukraine_ev_database_2025.json')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Файл не знайдено');
+            })
+            .then(data => {
+                initTable(data);
+            })
+            .catch(() => {
+                console.log('Використовуйте кнопку завантаження для вибору JSON файлу');
+            });
+    </script>
+</body>
+</html>
