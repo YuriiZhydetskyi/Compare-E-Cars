@@ -9,6 +9,30 @@
   },
   "electric_vehicles": [
     {
+      "model": "Volkswagen Golf 6 Variant 1.6 TDI",
+      "battery_chemistry": "N/A (дизельний ДВЗ, не електромобіль)",
+      "battery_capacity_kwh": "N/A",
+      "range_wltp_km": "N/A",
+      "range_real_km": "N/A",
+      "charge_0_100_hours": "N/A",
+      "charge_10_80_minutes": "N/A",
+      "dc_charging_max_kw": "N/A",
+      "ac_charging_max_kw": "N/A",
+      "ground_clearance_mm": 135,
+      "charging_port": "N/A",
+      "thermal_management": "N/A",
+      "production_years": "2009-2013",
+      "units_sold_worldwide": "~3,800,000 (всі варіанти Golf Mk6)",
+      "length_mm": 4534,
+      "width_mm": 1781,
+      "vehicle_class": "Компактний універсал (C-сегмент)",
+      "price_new_eur": "20000-28000",
+      "price_used_ukraine_eur": "6000-12000",
+      "trunk_volume_l": 505,
+      "notes": "Дизель 1.6 TDI додано для базового порівняння з електромоделями; поля, пов’язані з заряджанням, не застосовні.",
+      "clearance_requirement_met": false
+    },
+    {
       "model": "Nissan Leaf (2-го покоління)",
       "battery_chemistry": "NCM 523 (Nickel Manganese Cobalt)",
       "battery_capacity_kwh": "39.5 / 58",
@@ -536,20 +560,5 @@
       "notes": "Перший на e-Platform 3.0. Ocean дизайн. Обертовий 12.8\" екран. Зростаюча популярність як сімейний доступний EV. На межі бюджету €20k.",
       "clearance_requirement_met": true
     }
-  ],
-  "summary": {
-    "total_models": 22,
-    "models_within_budget": 19,
-    "models_meeting_clearance_150mm": 17,
-    "average_price_eur": "15000-20000",
-    "most_popular_brands": ["Tesla", "Hyundai", "BYD", "Nissan"],
-    "best_value_recommendations": [
-      "Hyundai Ioniq Electric (€8,000-18,000)",
-      "Renault Zoe (€12,000-18,000)",
-      "Tesla Model 3 (€15,000-22,000)",
-      "Kia e-Niro (€16,000-20,000)"
-    ],
-    "tax_deadline": "2026-01-01",
-    "market_notes": "VAT exemption expires January 1, 2026. Expect 25-30% price increase after this date."
-  }
+  ]
 }
